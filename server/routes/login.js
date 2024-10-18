@@ -1,4 +1,3 @@
-// routes/login.js
 import express from 'express';
 import connection from '../db.js';
 
@@ -6,15 +5,35 @@ const router = express.Router();
 
 // Login Endpoint
 router.post('/', (req, res) => {
-    const { clientId, scientistId, institutionId, password } = req.body;
+    const { clientId, scientistId, institutionId, adminId, password } = req.body;
 
-    if (clientId) {
+    // Handle Admin Login
+    if (adminId) {
+        const query = `
+            SELECT admin_id, name
+            FROM Admin
+            WHERE admin_id = ? AND password = ?;
+        `;
+
+        connection.query(query, [adminId, password], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Server error' });
+            }
+
+            if (result.length > 0) {
+                return res.json({ success: true, user: result[0] });
+            } else {
+                return res.json({ success: false, message: 'Invalid admin ID or password' });
+            }
+        });
+    } else if (clientId) {
         // Client Login
         const query = `
             SELECT User.user_id, User.name, Client.status
             FROM User
-            JOIN Client ON User.user_id = Client.client_id
-            WHERE Client.client_id = ? AND User.password = ?;
+            JOIN Client ON User.user_id = Client.client_no
+            WHERE Client.client_no = ? AND User.password = ?;
         `;
 
         connection.query(query, [clientId, password], (err, result) => {
@@ -24,9 +43,9 @@ router.post('/', (req, res) => {
             }
 
             if (result.length > 0) {
-                res.json({ success: true, user: result[0] });
+                return res.json({ success: true, user: result[0] });
             } else {
-                res.json({ success: false, message: 'Invalid client ID or password' });
+                return res.json({ success: false, message: 'Invalid client ID or password' });
             }
         });
     } else if (scientistId && institutionId) {
@@ -45,13 +64,14 @@ router.post('/', (req, res) => {
             }
 
             if (result.length > 0) {
-                res.json({ success: true, user: result[0] });
+                return res.json({ success: true, user: result[0] });
             } else {
-                res.json({ success: false, message: 'Invalid scientist ID, institution ID, or password' });
+                return res.json({ success: false, message: 'Invalid scientist ID, institution ID, or password' });
             }
         });
     } else {
-        res.status(400).json({ success: false, message: 'Client ID or Scientist ID required' });
+        // Respond if no valid credentials are provided
+        return res.status(400).json({ success: false, message: 'Client ID, Scientist ID, or Admin ID required' });
     }
 });
 

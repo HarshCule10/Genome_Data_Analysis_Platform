@@ -1,8 +1,8 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home'
-import AdminLogin from './Pages/adminname'
-import AdminDashboard from './Pages/AdminDash';
+import AdminLogin from './Pages/adminlogin'
+import AdminDashboard from './Pages/AdminDash'
 import ClientDashboard from './Pages/ClientDashboard'
 import ScientistDashboard from './Pages/ScientistDashboard'
 
@@ -15,6 +15,8 @@ const App = () => {
       <Route path="/home/adminlogin/admindash" element={<AdminDashboard />} />
        <Route path="/clientDashboard" element={<ClientDashboard />} />
       <Route path="/scientistDashboard" element={<ScientistDashboard />} />
+      
+
       </Routes>
   )
 }

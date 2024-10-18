@@ -1,0 +1,11 @@
+import React from 'react';
+
+const BlockedUsers = () => {
+  return (
+    <div className="h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">Blocked Users Page</h1>
+    </div>
+  );
+};
+
+export default BlockedUsers;
