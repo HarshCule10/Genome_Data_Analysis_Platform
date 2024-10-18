@@ -1,19 +1,20 @@
-import { createConnection } from 'mysql'; // Ensure you have mysql package installed
+// db.js
+import mysql from 'mysql2';
 
-const db = createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'mereces', // Ensure this is the correct password for your MySQL user
-  database: 'genome',
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'mereces', // Your MySQL password
+    database: 'genome'   // Your database name
 });
 
-// Connect to the database
-db.connect(err => {
-  if (err) {
-    console.error('Database connection failed:', err.stack);
-    return;
-  }
-  console.log('Database connected as id ' + db.threadId);
+// Connect to MySQL
+connection.connect((err) => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+    }
+    console.log('Connected to the MySQL database.');
 });
 
-export default db; // Ensure this is exporting the connection
+export default connection;

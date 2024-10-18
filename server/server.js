@@ -1,38 +1,22 @@
+// server.js
 import express from 'express';
-import mysql from 'mysql2';
+import cors from 'cors';
+import authRoutes from './routes/auth.js'; // Import the auth routes
+import searchSpeciesRoutes from './routes/searchSpecies.js'; // Import the search species routes
+import connection from './db.js'; // Import the database connection
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Create MySQL connection
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'mereces', // your MySQL password
-    database: 'genome', // replace with your database name
-});
-
-// Connect to MySQL
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        return;
-    }
-    console.log('Connected to the MySQL database.');
-});
-
 // Middleware to parse JSON requests
+app.use(cors());
 app.use(express.json());
 
-// Example route to fetch data
-app.get('/data', (req, res) => {
-    connection.query('SELECT * FROM user', (err, results) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.json(results);
-    });
-});
+// Use the authentication routes
+app.use('/api', authRoutes); // Prefixing with /api
+app.use('/api/searchSpecies', searchSpeciesRoutes); // Prefixing with /api/searchSpecies
+
 
 // Start the server
 app.listen(PORT, () => {
